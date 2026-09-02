@@ -1,0 +1,16 @@
+[user]
+	# TODO: 各自書き換えてください
+	name = CHANGE_ME
+	email = CHANGE_ME@example.com
+
+[init]
+	defaultBranch = main
+
+[core]
+	editor = vim
+
+[pull]
+	rebase = false
+
+[color]
+	ui = auto
