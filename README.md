@@ -14,11 +14,10 @@ dotfiles・SSH鍵・GPG秘密鍵は一切共有しません。
 ```
 arch-install/
 ├── README.md          このファイル
-├── make-install/       USBインストールメディア作成
+├── arch-inst-usb/       USBインストールメディア作成
 │   ├── make-usb-arch.sh
 │   └── Makefile
 ├── Makefile            Arch環境構築本体
-├── dotfiles/            .zshrc/.vimrc/.gitconfig（このリポジトリ専用の最小構成）
 └── docs/                作業記録・引き継ぎメモ
     ├── Arch_Linux_インストール作業記録.md
     └── arch-standalone-handover.md

@@ -1,7 +1,7 @@
 ### Arch Linux 環境構築 (Let's note CF-LX3 / Arch単独機)
 # Debian機（P1/X250）とは完全に独立。dotfiles・SSH鍵・秘密鍵の共有は一切行わない。
 # archinstallでXfce + sudoユーザー作成直後の「裸」の状態から動く前提で設計している
-# （base-devel/git/wget/nano/vim/CJKフォント等、archinstallの最小構成には
+# （base-devel/git/wget/nano/vim/CJKフォント等, archinstallの最小構成には
 #   一切入っていないため、bootstrap相当の内容を base に統合済み）。
 #
 # 前提: archinstall で Xfce + sudoユーザー作成済み、ネット接続済み
@@ -23,6 +23,7 @@ PACKAGES     := base-devel git wget nano vim networkmanager
 PACKAGES     += noto-fonts-cjk noto-fonts-emoji
 PACKAGES     += zsh gnome-terminal openssh keychain chromium
 PACKAGES     += fcitx5 fcitx5-configtool fcitx5-gtk fcitx5-qt
+PACKAGES     += arc-gtk-theme
 
 # AUR経由のみのもの
 # fcitx5-mozc-ut + emacs-mozc: 分離型の組み合わせ。
@@ -35,13 +36,13 @@ AUR_PACKAGES := dropbox fcitx5-mozc-ut emacs-mozc
 ########################################################
 ## エントリーポイント
 ########################################################
-.PHONY: all help base yay aur sudo-setup zsh-default emacs-stable ssh-setup init
+.PHONY: all help base yay aur sudo-setup zsh-default theme-setup emacs-stable ssh-setup init git emacs-toggle emacs-start power-menu tile-toggle make-run
 
 help: ## ターゲット一覧を表示
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 	| awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-all: base sudo-setup yay aur zsh-default ## base→sudo-setup→yay→aur→zsh-default を一括実行
+all: base sudo-setup yay aur zsh-default theme-setup ## base→sudo-setup→yay→aur→zsh-default→theme-setup を一括実行
 # emacs-stable/ssh-setup/init はビルド時間・対話入力を伴うため手動で個別実行すること
 
 ########################################################
@@ -81,6 +82,11 @@ sudo-setup: ## sudoグループ(wheel)の有効化
 zsh-default: ## ログインシェルをzshに変更
 	sudo chsh -s /usr/bin/zsh $$USER
 	@echo "✓ 次回ログインからzshが有効になります。"
+
+theme-setup: ## ウィンドウマネージャーと外観を Arc-Dark に変更
+	xfconf-query -c xfwm4 -p "/general/theme" -n -t string -s "Arc-Dark"
+	xfconf-query -c xfce4-appearance -p "/theme" -n -t string -s "Arc-Dark"
+	@echo "✓ ウィンドウ枠(xfwm4)と外観テーマを Arc-Dark に自動設定しました"
 
 ########################################################
 ## Emacs 自家ビルド
@@ -138,14 +144,53 @@ ssh-setup: ##! SSH鍵を新規生成し、GitHub登録・keychain設定までを
 	@echo "   keychain ~/.ssh/id_ed25519_arch && ssh -T git@github.com"
 
 ########################################################
-## dotfiles展開（このリポジトリ自身のもののみ。P1のdotfilesは参照しない）
+## bin/ スクリプト（シンボリックリンク＋xfconf-queryショートカット登録）
+# P1由来のdotfiles（~/src/github.com/minorugh/dotfiles）を参照する。
+# このリポジトリ自身にはbin/実体を持たない。
 ########################################################
-init: ## dotfiles/ 配下をシンボリックリンク展開
-	for item in zshrc vimrc gitconfig; do \
-		ln -vsf $(CURDIR)/dotfiles/.$$item $(HOME)/.$$item; \
+DOTFILES_DIR := $(HOME)/src/github.com/minorugh/dotfiles
+BIN_LINK = sudo ln -vsfn $(DOTFILES_DIR)/bin/$(1) /usr/local/bin/$(2) && sudo chmod +x /usr/local/bin/$(2)
+
+emacs-toggle: ## emacs-toggle のリンク作成 + F12ショートカット登録（Emacs最小化・復元）
+	$(call BIN_LINK,emacs-toggle,emacs-toggle)
+	xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/F12" -n -t string -s "emacs-toggle"
+
+emacs-start: ## emacs-start.sh のリンク作成（autostart.sh から呼ばれる起動ラッパー）
+	$(call BIN_LINK,emacs-start.sh,emacs-start.sh)
+
+power-menu: ## power-menu.sh のリンク作成 + 全角半角ショートカット登録（電源メニュー）
+	$(call BIN_LINK,power-menu.sh,power-menu.sh)
+	xfconf-query -c xfce4-keyboard-shortcuts \
+		-p "/commands/custom/Zenkaku_Hankaku" -n -t string \
+		-s 'gnome-terminal --window --geometry=80x24+2000+100 -- bash -c "power-menu.sh"'
+
+tile-toggle: ## tile-toggle.sh のリンク作成 + F15ショートカット登録（左右タイル切替）
+	$(call BIN_LINK,tile-toggle.sh,tile-toggle)
+	xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/F15" -n -t string -s "tile-toggle"
+
+make-run: ## make-run.sh のリンク作成（Emacs経由のmake実行を安全化）
+	$(call BIN_LINK,make-run.sh,make-run.sh)
+
+########################################################
+## dotfiles展開（P1由来。~/src/github.com/minorugh/dotfiles を
+## 事前にcloneしておくこと。編集・pushはP1のみ、Archはpull専用）
+########################################################
+init: ## dotfiles(P1由来)をシンボリックリンク展開
+	for item in zshrc Xmodmap gitconfig vimrc; do \
+		test -f $(DOTFILES_DIR)/.$$item && ln -vsf $(DOTFILES_DIR)/.$$item $(HOME)/.$$item; \
 	done
-	@echo "✓ dotfilesを展開しました"
-	@echo "  .gitconfig の user.name / user.email は各自書き換えてください"
+	test -L $(HOME)/.emacs.d || rm -rf $(HOME)/.emacs.d
+	ln -vsfn $(DOTFILES_DIR)/.emacs.d $(HOME)/.emacs.d
+	@echo "✓ dotfiles(P1由来)を展開しました"
+
+########################################################
+## arch-install自身のcommit・push
+## （dotfiles/git/Makefile の archlinux 分岐から呼ばれる）
+########################################################
+git: ## commit・push（arch-installはArch機がメインなので常にpush）
+	git add -A
+	git diff --cached --quiet || git commit -m "auto: $$(date '+%Y-%m-%d %H:%M:%S')"
+	git push
 
 # ------------------------------------------------------------
 # [Read-only] This file opens in read-only mode automatically.
