@@ -127,6 +127,7 @@ emacs-stable: ##! Emacs $(EMACS_VER) のソースビルド（依存パッケー�
 	  --without-compress-install && \
 	NATIVE_FULL_AOT=1 make -j$(shell nproc) && \
 	sudo make install
+	sudo sed -i 's|^Exec=emacs %F|Exec=/usr/local/bin/emacs-start.sh|' /usr/local/share/applications/emacs.desktop
 	@echo "✓ Emacs $(EMACS_VER) を /usr/local/bin/emacs にインストールしました"
 	@echo "  アンインストール: ~/src/emacs-$(EMACS_VER) で sudo make uninstall && make distclean"
 
