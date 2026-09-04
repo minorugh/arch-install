@@ -29,7 +29,7 @@ PACKAGES     += fcitx5 fcitx5-configtool fcitx5-gtk fcitx5-qt
 # e2ps は不要と判明（EmacsのPS-print→CUPS直送のため変換ツールは要らない）
 PACKAGES     += curl unarchiver unzip evince tig rsync xclip trash-cli
 PACKAGES     += automake autoconf fzf nsxiv hugo xdotool nodejs npm
-PACKAGES     += xfce4-screenshooter
+PACKAGES     += xfce4-screenshooter pinta 
 
 # 未確定・保留
 # - icons: 具体的に何のパッケージか要確認（アイコンテーマ名？）
@@ -40,7 +40,8 @@ PACKAGES     += xfce4-screenshooter
 # 公式版fcitx5-mozc（一体型）とemacs-mozcはファイル競合するため使わない
 # （詳細: docs/arch-standalone-handover.md 4章）
 # perl-net-sftp-foreign: upsftp.pl（GH共通デプロイ用）が要求するPerlモジュール
-AUR_PACKAGES := dropbox fcitx5-mozc-ut emacs-mozc cmigemo arc-gtk-theme nkf perl-net-sftp-foreign
+AUR_PACKAGES := dropbox fcitx5-mozc-ut emacs-mozc cmigemo arc-gtk-theme nkf
+AUR_PACKAGES += perl-net-sftp-foreign onlyoffice-bin
 
 .DEFAULT_GOAL := help
 
