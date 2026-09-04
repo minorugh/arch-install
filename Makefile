@@ -38,7 +38,7 @@ PACKAGES     += automake autoconf fzf nsxiv hugo xdotool seahorse nodejs npm
 # fcitx5-mozc-ut + emacs-mozc: 分離型の組み合わせ。
 # 公式版fcitx5-mozc（一体型）とemacs-mozcはファイル競合するため使わない
 # （詳細: docs/arch-standalone-handover.md 4章）
-AUR_PACKAGES := dropbox fcitx5-mozc-ut emacs-mozc cmigemo arc-gtk-theme nkf
+AUR_PACKAGES := dropbox fcitx5-mozc-ut emacs-mozc cmigemo arc-gtk-theme nkf perl-net-sftp-foreign
 
 .DEFAULT_GOAL := help
 
