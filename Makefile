@@ -23,12 +23,11 @@ PACKAGES     := base-devel git wget nano vim networkmanager
 PACKAGES     += noto-fonts-cjk noto-fonts-emoji ttf-nerd-fonts-symbols
 PACKAGES     += zsh gnome-terminal openssh keychain chromium
 PACKAGES     += fcitx5 fcitx5-configtool fcitx5-gtk fcitx5-qt
-PACKAGES     += arc-gtk-theme
 
 # 汎用開発ツール（アプリ系は含めない。GUIアプリは別途個別に判断する）
 # sxiv は upstream終了・Arch公式から削除済みのため後継のnsxivを使用
 # e2ps は不要と判明（EmacsのPS-print→CUPS直送のため変換ツールは要らない）
-PACKAGES     += nkf curl unarchiver unzip evince tig rsync xclip trash-cli
+PACKAGES     += curl unarchiver unzip evince tig rsync xclip trash-cli
 PACKAGES     += automake autoconf fzf nsxiv hugo xdotool seahorse nodejs npm
 
 # 未確定・保留
@@ -39,7 +38,7 @@ PACKAGES     += automake autoconf fzf nsxiv hugo xdotool seahorse nodejs npm
 # fcitx5-mozc-ut + emacs-mozc: 分離型の組み合わせ。
 # 公式版fcitx5-mozc（一体型）とemacs-mozcはファイル競合するため使わない
 # （詳細: docs/arch-standalone-handover.md 4章）
-AUR_PACKAGES := dropbox fcitx5-mozc-ut emacs-mozc cmigemo
+AUR_PACKAGES := dropbox fcitx5-mozc-ut emacs-mozc cmigemo arc-gtk-theme nkf
 
 .DEFAULT_GOAL := help
 
