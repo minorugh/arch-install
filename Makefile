@@ -76,8 +76,10 @@ yay: ##! AURヘルパー(yay)をソースからビルドしてインストール
 	cd /tmp/yay && makepkg -si --noconfirm
 	rm -rf /tmp/yay
 
-aur: ##! AUR経由でdropbox・fcitx5-mozc-ut・emacs-mozcをインストール（対話プロンプトあり）
+aur: ##! AUR経由でdropbox・fcitx5-mozc-ut・emacs-mozc・cmigemo・arc-gtk-theme・nkfをインストール（対話プロンプトあり）
 	$(AUR) $(AUR_PACKAGES)
+	sudo pacman -Rdd --noconfirm emacs 2>/dev/null || true
+	@echo "✓ emacs-mozcの依存で入るpacman版emacsは自動除去しました（自家ビルド版のみ残す）"
 # 導入後、メニューからDropboxを起動して初期設定・同期を行うこと
 
 ########################################################
