@@ -38,6 +38,7 @@ PACKAGES     += automake autoconf fzf nsxiv hugo xdotool seahorse nodejs npm
 # fcitx5-mozc-ut + emacs-mozc: 分離型の組み合わせ。
 # 公式版fcitx5-mozc（一体型）とemacs-mozcはファイル競合するため使わない
 # （詳細: docs/arch-standalone-handover.md 4章）
+# perl-net-sftp-foreign: upsftp.pl（GH共通デプロイ用）が要求するPerlモジュール
 AUR_PACKAGES := dropbox fcitx5-mozc-ut emacs-mozc cmigemo arc-gtk-theme nkf perl-net-sftp-foreign
 
 .DEFAULT_GOAL := help
@@ -63,7 +64,9 @@ base: ## 基本パッケージ一括インストール（archinstall直後の裸
 	sudo sed -i 's/^#ja_JP.UTF-8/ja_JP.UTF-8/' /etc/locale.gen
 	sudo locale-gen
 	sudo localectl set-locale LANG=ja_JP.UTF-8
+	sudo sed -i '/pam_gnome_keyring/d' /etc/pam.d/lightdm /etc/pam.d/lightdm-autologin 2>/dev/null || true
 	@echo "✓ 基本パッケージ・日本語ロケールの導入完了"
+	@echo "  PAMのgnome-keyring自動起動（keychainと衝突する）は無効化済み"
 	@echo "  もし sudo でここまで到達できなかった場合は README.md の"
 	@echo "  「sudoが効かないとき」を参照してください"
 
@@ -76,10 +79,12 @@ yay: ##! AURヘルパー(yay)をソースからビルドしてインストール
 	cd /tmp/yay && makepkg -si --noconfirm
 	rm -rf /tmp/yay
 
-aur: ##! AUR経由でdropbox・fcitx5-mozc-ut・emacs-mozc・cmigemo・arc-gtk-theme・nkfをインストール（対話プロンプトあり）
+aur: ##! AUR経由でdropbox・fcitx5-mozc-ut・emacs-mozc・cmigemo・arc-gtk-theme・nkf・perl-net-sftp-foreignをインストール（対話プロンプトあり）
 	$(AUR) $(AUR_PACKAGES)
 	sudo pacman -Rdd --noconfirm emacs 2>/dev/null || true
+	sudo sed -i '/pam_gnome_keyring/d' /etc/pam.d/lightdm /etc/pam.d/lightdm-autologin 2>/dev/null || true
 	@echo "✓ emacs-mozcの依存で入るpacman版emacsは自動除去しました（自家ビルド版のみ残す）"
+	@echo "✓ PAMのgnome-keyring自動起動（keychainと衝突する）は無効化済み"
 # 導入後、メニューからDropboxを起動して初期設定・同期を行うこと
 
 ########################################################
