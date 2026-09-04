@@ -20,23 +20,33 @@ EMACS_VER    := 31.1
 # pacman版と自家ビルド版の共存によるPATH競合・.eln-cacheの汚染を
 # 構造的に避ける（詳細: docs/arch-standalone-handover.md 3章）
 PACKAGES     := base-devel git wget nano vim networkmanager
-PACKAGES     += noto-fonts-cjk noto-fonts-emoji
+PACKAGES     += noto-fonts-cjk noto-fonts-emoji ttf-nerd-fonts-symbols
 PACKAGES     += zsh gnome-terminal openssh keychain chromium
 PACKAGES     += fcitx5 fcitx5-configtool fcitx5-gtk fcitx5-qt
 PACKAGES     += arc-gtk-theme
+
+# 汎用開発ツール（アプリ系は含めない。GUIアプリは別途個別に判断する）
+# sxiv は upstream終了・Arch公式から削除済みのため後継のnsxivを使用
+# e2ps は不要と判明（EmacsのPS-print→CUPS直送のため変換ツールは要らない）
+PACKAGES     += nkf curl unarchiver unzip evince tig rsync xclip trash-cli
+PACKAGES     += automake autoconf fzf nsxiv hugo xdotool seahorse nodejs npm
+
+# 未確定・保留
+# - icons: 具体的に何のパッケージか要確認（アイコンテーマ名？）
+# - gist: pacman/AURのパッケージではなくgemで入れるツールの可能性が高い。要確認
 
 # AUR経由のみのもの
 # fcitx5-mozc-ut + emacs-mozc: 分離型の組み合わせ。
 # 公式版fcitx5-mozc（一体型）とemacs-mozcはファイル競合するため使わない
 # （詳細: docs/arch-standalone-handover.md 4章）
-AUR_PACKAGES := dropbox fcitx5-mozc-ut emacs-mozc
+AUR_PACKAGES := dropbox fcitx5-mozc-ut emacs-mozc cmigemo
 
 .DEFAULT_GOAL := help
 
 ########################################################
 ## エントリーポイント
 ########################################################
-.PHONY: all help base yay aur sudo-setup zsh-default theme-setup emacs-stable ssh-setup init git emacs-toggle emacs-start power-menu tile-toggle make-run
+.PHONY: all help base yay aur sudo-setup zsh-default theme-setup emacs-stable ssh-setup github init git emacs-toggle emacs-start power-menu tile-toggle make-run
 
 help: ## ターゲット一覧を表示
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -170,6 +180,14 @@ tile-toggle: ## tile-toggle.sh のリンク作成 + F15ショートカット登�
 
 make-run: ## make-run.sh のリンク作成（Emacs経由のmake実行を安全化）
 	$(call BIN_LINK,make-run.sh,make-run.sh)
+
+########################################################
+## dotfiles(P1由来)のclone
+########################################################
+github: ## dotfilesリポジトリをHTTPSでclone（初回のみ。以降はgit pullで更新）
+	mkdir -p $(HOME)/src/github.com/minorugh
+	git clone https://github.com/minorugh/dotfiles.git $(DOTFILES_DIR)
+	@echo "✓ dotfiles を clone しました（編集・pushはP1のみ、Archはpull専用）"
 
 ########################################################
 ## dotfiles展開（P1由来。~/src/github.com/minorugh/dotfiles を
