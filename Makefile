@@ -28,7 +28,8 @@ PACKAGES     += fcitx5 fcitx5-configtool fcitx5-gtk fcitx5-qt
 # sxiv は upstream終了・Arch公式から削除済みのため後継のnsxivを使用
 # e2ps は不要と判明（EmacsのPS-print→CUPS直送のため変換ツールは要らない）
 PACKAGES     += curl unarchiver unzip evince tig rsync xclip trash-cli
-PACKAGES     += automake autoconf fzf nsxiv hugo xdotool seahorse nodejs npm
+PACKAGES     += automake autoconf fzf nsxiv hugo xdotool nodejs npm
+PACKAGES     += xfce4-screenshooter
 
 # 未確定・保留
 # - icons: 具体的に何のパッケージか要確認（アイコンテーマ名？）
