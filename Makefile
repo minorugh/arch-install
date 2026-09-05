@@ -210,6 +210,16 @@ init: ## dotfiles(P1由来)をシンボリックリンク展開
 	ln -vsfn $(DOTFILES_DIR)/.emacs.d $(HOME)/.emacs.d
 	@echo "✓ dotfiles(P1由来)を展開しました"
 
+latex: ## Arch Linux 用の LaTeX 環境構築とシンボリックリンク作成
+	sudo pacman -S --needed --noconfirm texlive-basic texlive-bin texlive-latex texlive-langjapanese
+	sudo ln -vsfn $(DOTFILES_DIR)/tex/dvpd.sh /usr/local/bin
+	sudo chmod +x /usr/local/bin/dvpd.sh
+	sudo mkdir -p /usr/share/texmf-dist/tex/platex
+	sudo ln -vsfn $(DOTFILES_DIR)/tex/platex/my-sty /usr/share/texmf-dist/tex/platex/
+	sudo mktexlsr
+	sudo fmtutil-sys --byfmt platex
+	sudo fmtutil-sys --byfmt uplatex
+
 ########################################################
 ## arch-install自身のcommit・push
 ## （dotfiles/git/Makefile の archlinux 分岐から呼ばれる）
