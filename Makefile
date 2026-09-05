@@ -29,7 +29,7 @@ PACKAGES     += fcitx5 fcitx5-configtool fcitx5-gtk fcitx5-qt
 # e2ps は不要と判明（EmacsのPS-print→CUPS直送のため変換ツールは要らない）
 PACKAGES     += curl unarchiver unzip evince tig rsync xclip trash-cli
 PACKAGES     += automake autoconf fzf nsxiv hugo xdotool nodejs npm
-PACKAGES     += xfce4-screenshooter pinta 
+PACKAGES     += xfce4-screenshooter pinta
 
 # 未確定・保留
 # - icons: 具体的に何のパッケージか要確認（アイコンテーマ名？）
@@ -144,7 +144,7 @@ emacs-stable: ##! Emacs $(EMACS_VER) のソースビルド（依存パッケー�
 ########################################################
 ssh-setup: ##! SSH鍵を新規生成し、GitHub登録・keychain設定までを案内する
 	mkdir -p ~/.ssh
-	test -f ~/.ssh/id_ed25519_arch || ssh-keygen -t ed25519 -C "archlinux-cf-lx3" -f ~/.ssh/id_ed25519_arch
+	test -f ~/.ssh/id_ed25519_arch || ssh-keygen -t ed25519 -N "" -C "archlinux-cf-lx3" -f ~/.ssh/id_ed25519_arch
 	@echo ""
 	@echo "1) 以下の公開鍵をGitHubに登録してください"
 	@echo "   Settings > SSH and GPG keys > New SSH key"
