@@ -29,7 +29,7 @@ PACKAGES     += fcitx5 fcitx5-configtool fcitx5-gtk fcitx5-qt
 # e2ps は不要と判明（EmacsのPS-print→CUPS直送のため変換ツールは要らない）
 PACKAGES     += curl unarchiver unzip evince tig rsync xclip trash-cli
 PACKAGES     += automake autoconf fzf nsxiv hugo xdotool nodejs npm
-PACKAGES     += xfce4-screenshooter pinta
+PACKAGES     += xfce4-screenshooter pinta keepassxc light-locker
 
 # 未確定・保留
 # - icons: 具体的に何のパッケージか要確認（アイコンテーマ名？）
@@ -42,6 +42,7 @@ PACKAGES     += xfce4-screenshooter pinta
 # perl-net-sftp-foreign: upsftp.pl（GH共通デプロイ用）が要求するPerlモジュール
 AUR_PACKAGES := dropbox fcitx5-mozc-ut emacs-mozc cmigemo arc-gtk-theme nkf
 AUR_PACKAGES += perl-net-sftp-foreign onlyoffice-bin
+AUR_PACKAGES += claude-desktop chatgpt-desktop
 
 .DEFAULT_GOAL := help
 
